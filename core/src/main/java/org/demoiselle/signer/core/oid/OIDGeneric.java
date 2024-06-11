@@ -82,10 +82,10 @@ public class OIDGeneric {
 	 */
 	public static OIDGeneric getInstance(byte[] data) throws IOException, Exception {
 		is = new ASN1InputStream(data);
-		DLSequence sequence = (DLSequence) is.readObject();
+		DERTaggedObject der = (DERTaggedObject) is.readObject();
+		DLSequence sequence = (DLSequence) der.getObject();
 		ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) sequence.getObjectAt(0);
 		DERTaggedObject taggedObject = (DERTaggedObject) sequence.getObjectAt(1);
-		DERTaggedObject taggedObject2 = (DERTaggedObject) taggedObject.getObject();
 
 		DEROctetString octet = null;
 		DERPrintableString print = null;
@@ -93,15 +93,15 @@ public class OIDGeneric {
 		DERIA5String ia5 = null;
 
 		try {
-			octet = (DEROctetString) taggedObject2.getObject();
+			octet = (DEROctetString) taggedObject.getObject();
 		} catch (Exception e) {
 			try {
-				print = (DERPrintableString) taggedObject2.getObject();
+				print = (DERPrintableString) taggedObject.getObject();
 			} catch (Exception e1) {
 				try {
-					utf8 = (DERUTF8String) taggedObject2.getObject();
+					utf8 = (DERUTF8String) taggedObject.getObject();
 				} catch (Exception e2) {
-					ia5 = (DERIA5String) taggedObject2.getObject();
+					ia5 = (DERIA5String) taggedObject.getObject();
 				}
 			}
 		}
